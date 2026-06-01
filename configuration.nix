@@ -11,7 +11,7 @@
   networking.hostName = "overrig";
 
   # NixOS 25.11 (unstable) state version
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 
   # Enable flakes and the new nix command interface
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
