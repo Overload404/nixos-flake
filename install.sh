@@ -4,9 +4,11 @@
 # Clones the Overload404/nixos-flake flake and performs a full install.
 #
 # Usage:
-#   curl -sL https://raw.githubusercontent.com/Overload404/nixos-flake/master/install.sh | bash
-#   bash install.sh
-#   bash install.sh --skip-partition   # if /mnt is already partitioned and mounted
+#   curl -LO https://raw.githubusercontent.com/Overload404/nixos-flake/master/install.sh
+#   sudo bash install.sh
+#
+# Or directly (prompts still work via /dev/tty):
+#   curl -sL https://raw.githubusercontent.com/Overload404/nixos-flake/master/install.sh | sudo bash
 
 set -euo pipefail
 
@@ -27,6 +29,12 @@ die()    { echo -e "\n${RED}╔════════════════�
            exit 1; }
 header() { echo -e "\n${BOLD}━━━ $* ━━━${NC}"; }
 info()   { echo -e "  ${GREEN}→${NC} $*"; }
+
+# Detect piped stdin (curl ... | bash) and explain the fix
+if [[ ! -t 0 ]]; then
+    echo -e "${YELLOW}Note: stdin is piped. All prompts will use /dev/tty for input.${NC}" >&2
+    echo "" >&2
+fi
 
 # ──────────────────────────────────────────────
 # Banner
@@ -127,7 +135,7 @@ else
 
     # Ask which disk
     echo -ne "${BOLD}Which disk to install to? (e.g., nvme0n1, sda): ${NC}"
-    read -r DISK
+    read -r DISK < /dev/tty
 
     # Validate disk exists
     if [[ ! -b "/dev/$DISK" ]]; then
@@ -143,7 +151,7 @@ else
     echo ""
 
     echo -ne "${BOLD}Type 'YES' (uppercase) to confirm: ${NC}"
-    read -r CONFIRM
+    read -r CONFIRM < /dev/tty
     if [[ "$CONFIRM" != "YES" ]]; then
         die "Aborted by user."
     fi
@@ -312,7 +320,7 @@ echo -e "  ${BOLD}Config${NC}:       /etc/nixos (from Overload404/nixos-flake)"
 echo ""
 
 echo -ne "${BOLD}Reboot now? [y/N] ${NC}"
-read -r REBOOT
+read -r REBOOT < /dev/tty
 case "$REBOOT" in
     [yY]|[yY][eE][sS])
         echo ""
