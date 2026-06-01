@@ -178,7 +178,7 @@ in
   # =========================================================================
   programs.waybar = {
     enable = true;
-    package = pkgs.waybar.override { hyprlandSupport = true; };
+    package = pkgs.waybar;
     # Empty settings/style: the actual config files are deployed from
     # dotfiles via xdg.configFile below (with mkForce to override the
     # module-generated empty config.jsonc / style.css).
@@ -390,9 +390,6 @@ in
     # Terminal multiplexer (also configured via programs.tmux above)
     tmux
 
-    # WAYBAR: If the waybar module's package override (hyprlandSupport)
-    # doesn't work, uncomment the line below and comment out
-    # programs.waybar.package above:
-    # (waybar.override { hyprlandSupport = true; })
+
   ];
 }
