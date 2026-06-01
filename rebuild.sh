@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# --impure is used on all nixos-rebuild commands because
+# hardware-configuration.nix is in .gitignore (not committed)
+# and must be force-tracked for Nix flakes to include it.
+
 # ── change to the flake root (script's own directory) ──
 cd "$(dirname "$0")"
 
@@ -41,7 +45,7 @@ case "$CMD" in
 
     # 3. rebuild + switch
     header "Rebuilding system..."
-    sudo nixos-rebuild switch --flake .#overrig
+    sudo nixos-rebuild switch --impure --flake .#overrig
     ok
 
     # 4. garbage collect system
@@ -64,13 +68,13 @@ case "$CMD" in
 
   switch)
     header "Rebuilding and switching..."
-    sudo nixos-rebuild switch --flake .#overrig
+    sudo nixos-rebuild switch --impure --flake .#overrig
     ok
     ;;
 
   boot)
     header "Building and adding to boot menu..."
-    sudo nixos-rebuild boot --flake .#overrig
+    sudo nixos-rebuild boot --impure --flake .#overrig
     ok
     echo -e "${GREEN}System will appear in boot menu. Reboot to test.${NC}"
     ;;
@@ -81,7 +85,7 @@ case "$CMD" in
     ok
 
     header "Dry-activating..."
-    sudo nixos-rebuild dry-activate --flake .#overrig
+    sudo nixos-rebuild dry-activate --impure --flake .#overrig
     ok
     ;;
 
