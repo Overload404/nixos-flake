@@ -19,8 +19,7 @@
     jack.enable = false;              # JACK not needed
   };
 
-  # Disable PulseAudio (PipeWire provides pulse server)
-  hardware.pulseaudio.enable = lib.mkForce false;
+  # PulseAudio server is provided by PipeWire (pulse.enable = true above)
 
   # Real-time priority for audio
   security.rtkit.enable = true;
