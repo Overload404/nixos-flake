@@ -11,10 +11,9 @@
     enable = true;
     enable32Bit = true;
 
-    # Mesa OpenGL/Vulkan drivers + AMDVLK (fallback) + VA-API
+    # Mesa OpenGL/Vulkan drivers + VA-API
     extraPackages = with pkgs; [
       mesa.drivers
-      amdvlk
       libva
       libva-utils
       vaapiVdpau
@@ -23,14 +22,8 @@
     # 32-bit packages for Steam and legacy games
     extraPackages32 = with pkgs.pkgsi686Linux; [
       mesa.drivers
-      amdvlk
     ];
   };
-
-  # ---------------------------------------------------------------------------
-  # Force RADV (Mesa Vulkan driver) over AMDVLK for better performance
-  # ---------------------------------------------------------------------------
-  environment.variables.AMD_VULKAN_ICD = "RADV";
 
   # ---------------------------------------------------------------------------
   # AMDGPU: OpenCL compute (ROCm), early KMS, overdrive (OC/UV via LACT)
