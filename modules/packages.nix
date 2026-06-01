@@ -112,7 +112,7 @@
     fcitx5
     qt6Packages.fcitx5-configtool
     fcitx5-gtk
-    fcitx5-qt
+    qt6Packages.fcitx5-qt
     qt6.qtwayland      # Qt6 Wayland platform plugin
 
     # -----------------------------------------------------------------------
@@ -127,7 +127,7 @@
     nerd-fonts.jetbrains-mono
     noto-fonts
     noto-fonts-cjk-sans
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     sarasa-gothic
 
     # -----------------------------------------------------------------------
@@ -162,7 +162,7 @@
       nerd-fonts.jetbrains-mono
       noto-fonts
       noto-fonts-cjk-sans
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       sarasa-gothic
     ];
   };
