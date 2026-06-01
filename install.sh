@@ -263,6 +263,15 @@ fi
 info "Hardware configuration generated"
 ok
 
+# Force-track hardware-configuration.nix despite .gitignore.
+# Nix flakes only include git-tracked files in the build source,
+# and hardware-configuration.nix is in .gitignore to prevent
+# committing machine-specific UUIDs. git add -f overrides that.
+info "Tracking hardware-configuration.nix in git (force-add)..."
+git -C /mnt/etc/nixos add -f hardware-configuration.nix \
+    || die "Failed to add hardware-configuration.nix to git index"
+ok
+
 # ──────────────────────────────────────────────
 # 6. Install NixOS
 # ──────────────────────────────────────────────
@@ -279,7 +288,9 @@ echo ""
 info "Starting nixos-install (this is the long step)..."
 echo ""
 
-nixos-install --flake "/mnt/etc/nixos#overrig" --no-root-password \
+# --impure needed because hardware-configuration.nix is force-added
+# to git but not committed (dirty tree needs --impure)
+nixos-install --impure --flake "/mnt/etc/nixos#overrig" --no-root-password \
     || die "nixos-install failed.\n  Check the output above for errors.\n  You can fix issues and re-run with --skip-partition."
 
 ok
