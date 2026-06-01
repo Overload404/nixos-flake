@@ -110,7 +110,7 @@
     # Input Method: Fcitx5
     # -----------------------------------------------------------------------
     fcitx5
-    fcitx5-configtool
+    qt6Packages.fcitx5-configtool
     fcitx5-gtk
     fcitx5-qt
     qt6.qtwayland      # Qt6 Wayland platform plugin
