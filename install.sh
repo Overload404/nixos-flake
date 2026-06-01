@@ -168,10 +168,51 @@ else
     EFI_PART="/dev/${DISK}${PART_PREFIX}1"
     ROOT_PART="/dev/${DISK}${PART_PREFIX}2"
 
+    # ── Pre-partition cleanup ───────────────
+    header "Pre-partition cleanup for /dev/$DISK"
+
+    # Unmount any currently-mounted partitions on the target disk
+    info "Unmounting any active partitions on /dev/$DISK..."
+    for PART in $(lsblk -nlo NAME "/dev/$DISK" 2>/dev/null | grep -v "^${DISK}$"); do
+        MNT=$(findmnt -nlo TARGET "/dev/$PART" 2>/dev/null || true)
+        if [[ -n "$MNT" ]]; then
+            info "  Unmounting /dev/$PART from $MNT..."
+            umount -R "$MNT" 2>/dev/null || warn "Could not unmount $MNT (may be in use)"
+        fi
+    done
+    info "  Unmounting /mnt and /mnt/boot if mounted..."
+    umount -R /mnt/boot 2>/dev/null || true
+    umount -R /mnt 2>/dev/null || true
+
+    # Check for existing GPT table
+    EXISTING_TABLE=$(parted "/dev/$DISK" -- print 2>/dev/null | grep "Partition Table" || true)
+    if echo "$EXISTING_TABLE" | grep -q "gpt"; then
+        warn "Existing GPT partition table detected on /dev/$DISK"
+        echo ""
+        echo -ne "${BOLD}Re-create partition table anyway? [y/N] ${NC}"
+        read -r WIPE_GPT < /dev/tty
+        if [[ ! "$WIPE_GPT" =~ ^[Yy]$ ]]; then
+            die "Aborted. Use --skip-partition to install with existing layout."
+        fi
+    fi
+    ok
+
     # ── Partition ──────────────────────────
     header "Partitioning /dev/$DISK"
 
-    info "Creating GPT partition table..."
+    # Wipe any existing partitions first
+    info "Removing existing partitions..."
+    EXISTING_PARTS=$(parted "/dev/$DISK" -- print 2>/dev/null | grep -E '^[ ]*[0-9]+' | awk '{print $1}' || true)
+    if [[ -n "$EXISTING_PARTS" ]]; then
+        for PART_NUM in $EXISTING_PARTS; do
+            info "  Deleting partition $PART_NUM..."
+            parted "/dev/$DISK" -- rm "$PART_NUM" 2>/dev/null || warn "Could not delete partition $PART_NUM"
+        done
+    else
+        info "  No existing partitions found"
+    fi
+
+    info "Creating new GPT partition table..."
     parted "/dev/$DISK" -- mklabel gpt || die "Failed to create GPT label on /dev/$DISK"
 
     info "Creating EFI system partition (512 MiB)..."
