@@ -182,10 +182,86 @@ cp /path/to/backup/openvpn/* ~/.openvpn/
 cp -r /mnt/backup/games/wow ~/Games/wow
 ```
 
-### 6.6 Rebuild to apply any changes
+## Daily Workflow & Updates
+
+You don't need to keep your config in `/etc/nixos` — point `nixos-rebuild` at your working copy:
 
 ```bash
-sudo nixos-rebuild switch --flake /etc/nixos#overrig
+# Work from your clone (not /etc/nixos)
+cd ~/repos/nix-migration
+```
+
+### Update all packages
+
+```bash
+# Update flake inputs to latest versions
+nix flake update
+
+# Rebuild and switch to the new system
+sudo nixos-rebuild switch --flake .#overrig
+```
+
+For more control, update inputs selectively:
+
+```bash
+nix flake lock --update-input nixpkgs     # Just nixpkgs
+nix flake lock --update-input home-manager # Just home-manager
+```
+
+### Edit your config
+
+1. Edit files in `~/repos/nix-migration/` (add packages to `modules/packages.nix`, tweak `home.nix`, etc.)
+2. Rebuild: `sudo nixos-rebuild switch --flake .#overrig`
+3. Commit and push: `git add -A && git commit -m "what changed" && git push`
+
+### Rollback
+
+If an update breaks something:
+
+```bash
+# Roll back to the previous generation
+sudo nixos-rebuild switch --rollback
+
+# Or list all generations and pick one
+sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+sudo nixos-rebuild switch --flake .#overrig --no-flake-lock-update
+```
+
+### Clean up old generations
+
+```bash
+# Remove generations older than 7 days
+sudo nix-collect-garbage --delete-older-than 7d
+
+# Also clean home-manager generations
+home-manager expire-generations -7d
+
+# Check disk usage
+nix store info
+```
+
+### Test before switching
+
+```bash
+# Build and add to boot menu without switching (safer for kernel/driver updates)
+sudo nixos-rebuild boot --flake .#overrig
+# Reboot to test, if it works:
+sudo nixos-rebuild switch --flake .#overrig
+
+# Dry-run to see what would change
+nix flake check
+sudo nixos-rebuild dry-activate --flake .#overrig
+```
+
+### Full update cycle (do this weekly)
+
+```bash
+cd ~/repos/nix-migration
+git pull                    # If you use multiple machines
+nix flake update            # Pull latest package versions
+sudo nixos-rebuild switch --flake .#overrig   # Apply
+sudo nix-collect-garbage --delete-older-than 14d  # Cleanup
+home-manager expire-generations -14d
 ```
 
 ---
