@@ -184,33 +184,36 @@ else
     umount -R /mnt/boot 2>/dev/null || true
     umount -R /mnt 2>/dev/null || true
 
-    # Check for existing GPT table
-    EXISTING_TABLE=$(parted "/dev/$DISK" -- print 2>/dev/null | grep "Partition Table" || true)
-    if echo "$EXISTING_TABLE" | grep -q "gpt"; then
-        warn "Existing GPT partition table detected on /dev/$DISK"
+    # Check for existing partitions (not just empty GPT table)
+    EXISTING_PARTS=$(parted "/dev/$DISK" -- print 2>/dev/null | grep -E '^[ ]*[0-9]+' | awk '{print $1}' || true)
+    if [[ -n "$EXISTING_PARTS" ]]; then
+        warn "Existing partitions detected on /dev/$DISK: $(echo $EXISTING_PARTS)"
         echo ""
-        echo -ne "${BOLD}Re-create partition table anyway? [y/N] ${NC}"
-        read -r WIPE_GPT < /dev/tty
-        if [[ ! "$WIPE_GPT" =~ ^[Yy]$ ]]; then
-            die "Aborted. Use --skip-partition to install with existing layout."
+        echo -ne "${BOLD}Wipe all existing partitions and create a fresh layout? [y/N] ${NC}"
+        read -r CONFIRM_WIPE < /dev/tty
+        if [[ ! "$CONFIRM_WIPE" =~ ^[Yy]$ ]]; then
+            die "Aborted by user."
         fi
+    else
+        info "No existing partitions found — disk is clean"
     fi
     ok
 
     # ── Partition ──────────────────────────
     header "Partitioning /dev/$DISK"
 
-    # Wipe any existing partitions first
-    info "Removing existing partitions..."
-    EXISTING_PARTS=$(parted "/dev/$DISK" -- print 2>/dev/null | grep -E '^[ ]*[0-9]+' | awk '{print $1}' || true)
-    if [[ -n "$EXISTING_PARTS" ]]; then
-        for PART_NUM in $EXISTING_PARTS; do
-            info "  Deleting partition $PART_NUM..."
-            parted "/dev/$DISK" -- rm "$PART_NUM" 2>/dev/null || warn "Could not delete partition $PART_NUM"
-        done
+    # Wipe all signatures (filesystem, partition table, LVM, etc.)
+    info "Wiping all disk signatures..."
+    if command -v wipefs &>/dev/null; then
+        wipefs -a "/dev/$DISK" 2>/dev/null || warn "wipefs had issues (continuing)"
     else
-        info "  No existing partitions found"
+        # Fallback: zero first 2 MiB to clear MBR + primary GPT header
+        dd if=/dev/zero of="/dev/$DISK" bs=1M count=2 conv=notrunc 2>/dev/null || true
     fi
+
+    # Give kernel time to release the device
+    partprobe "/dev/$DISK" 2>/dev/null || true
+    sleep 1
 
     info "Creating new GPT partition table..."
     parted "/dev/$DISK" -- mklabel gpt || die "Failed to create GPT label on /dev/$DISK"
@@ -222,7 +225,7 @@ else
     info "Creating root partition (remainder of disk)..."
     parted "/dev/$DISK" -- mkpart primary ext4 513MiB 100% || die "Failed to create root partition"
 
-    # Let the kernel re-read the partition table
+    # Let the kernel re-read the new partition table
     info "Waiting for kernel to re-read partition table..."
     partprobe "/dev/$DISK" 2>/dev/null || true
     sleep 2
