@@ -4,6 +4,34 @@ Step-by-step guide for installing NixOS from a live USB/CD using this flake conf
 
 ---
 
+## Quick Install (Recommended) 🚀
+
+One command — downloads and runs the automated installer from the live CD:
+
+```bash
+curl -sL https://raw.githubusercontent.com/Overload404/nix-migration/master/install.sh | sudo bash
+```
+
+The script handles everything: disk selection, partitioning, formatting, cloning the repo, generating hardware config, building, and setting passwords. You'll only need to:
+
+1. Boot the NixOS live ISO
+2. Connect to the internet
+3. Run the above command
+4. Confirm which disk to install to
+5. Set passwords when prompted
+
+If you've already partitioned and mounted to `/mnt`:
+
+```bash
+curl -sL https://raw.githubusercontent.com/Overload404/nix-migration/master/install.sh | sudo bash -s -- --skip-partition
+```
+
+> **Prefer to review first?** Download the script with `curl -LO <url>` and inspect it before running.
+> 
+> The manual step-by-step guide is below if you want full control.
+
+---
+
 ## Prerequisites
 
 - **NixOS live ISO** booted (nixos-unstable recommended for RX 9060 XT support)
