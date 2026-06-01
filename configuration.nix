@@ -16,6 +16,7 @@
   # Enable flakes and the new nix command interface
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  nixpkgs.config.allowUnfree = true;
   # Custom package overlays
   nixpkgs.overlays = [ (import ./overlay.nix) ];
 }
