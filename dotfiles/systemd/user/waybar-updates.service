@@ -1,0 +1,6 @@
+[Unit]
+Description=Check for pacman updates and notify waybar
+
+[Service]
+Type=oneshot
+ExecStart=%h/.config/waybar/updates.sh

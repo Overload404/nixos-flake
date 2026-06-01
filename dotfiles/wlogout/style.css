@@ -1,0 +1,92 @@
+/* @import "./colors/rose-pine-moon.css"; */
+@import "./colors/gruvbox.css";
+
+* {
+	background-image: none;
+	box-shadow: none;
+}
+
+window {
+	background-color: @base;
+}
+
+button {
+	border-radius: 20px;
+	margin: 20px;
+	border-color: @overlay;
+	text-decoration-color: #FFFFFF;
+	color: @text;
+	background-color: @surface;
+	border-style: solid;
+	border-width: 1px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 25%;
+}
+
+button:focus,
+button:active,
+button:hover {
+	background-color: @overlay;
+	outline-style: none;
+}
+
+#lock {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/lock.png"))
+}
+
+#lock hover,
+active,
+focus {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/lock-hover.png"))
+}
+
+#logout {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/logout.png"));
+}
+
+#logout hover,
+active,
+focus {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/logout-hover.png"))
+}
+
+#suspend {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/sleep.png"));
+}
+
+#suspend hover,
+active,
+focus {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/sleep-hover.png"))
+}
+
+#hibernate {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/windows.png"));
+}
+
+#hibernate hover,
+active,
+focus {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/windows-hover.png"))
+}
+
+#shutdown {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/power.png"));
+}
+
+#shutdown hover,
+active,
+focus {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/power-hover.png"))
+}
+
+#reboot {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/restart.png"));
+}
+
+#reboot hover,
+active,
+focus {
+	background-image: image(url("/usr/share/wlogout/icons/gruvbox/restart-hover.png"))
+}

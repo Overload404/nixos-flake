@@ -1,0 +1,9 @@
+[Unit]
+Description=Hourly pacman update check for waybar
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1h
+
+[Install]
+WantedBy=timers.target

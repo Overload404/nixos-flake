@@ -1,0 +1,66 @@
+# Use the "bubble" style layout from your Option 2
+format = """
+$status\
+$character\
+"""
+
+right_format = """
+${custom.ssh_bubble}\
+$rust\
+$lua\
+$directory\
+$git_branch\
+$git_status\
+$cmd_duration\
+"""
+
+# The main prompt symbol ()
+add_newline = false
+
+[character]
+success_symbol = "[](fg:236)[ ](bg:236 fg:106)[](fg:236) " # [cite: 1, 3]
+error_symbol = "[](fg:236)[ ](bg:236 fg:124)[](fg:236) "   # [cite: 1, 3]
+
+[directory]
+style = "bg:236 fg:66" # filepath_color 
+format = "[](fg:236)[$path]($style)[](fg:236) "
+truncation_length = 3
+fish_style_pwd_dir_length = 1
+
+[git_branch]
+symbol = "  " # git_branch_symbol 
+style = "bg:236 fg:white" 
+format = "[](fg:236)[$symbol$branch]($style)[](fg:236)"
+
+[git_status]
+# Recreates the two-tone git bubble: [branch | status]
+style = "bg:236 fg:orange" # git_symbols_color 
+format = "[$all_status$ahead_behind]($style)"
+# Mappings from your source [cite: 1, 2]
+conflicted = "[](bg:236 fg:orange)[!|($count)](fg:236 bg:orange)[](bg:236 fg:orange)"
+untracked = "[](bg:236 fg:yellow)[󱐋|($count)](fg:236 bg:yellow)[](bg:236 fg:yellow)"
+modified = "[](bg:236 fg:white)[•|($count)](fg:236 bg:white)[](bg:236 fg:white)"
+staged = "[](bg:236 fg:cyan)[|($count)](fg:236 bg:cyan)[](bg:236 fg:cyan)"
+deleted = "[](bg:236 fg:red)[|($count)](fg:236 bg:red)[](bg:236 fg:red)"
+renamed = "[](bg:236 fg:purple)[|($count)](fg:236 bg:purple)][](bg:236 fg:purple)"
+
+[status]
+disabled = false
+format = "[](fg:236)[$int]($style)[](fg:236) "
+style = "bg:236 fg:124" # prompt_symbol_error_color 
+
+[custom.ssh_bubble]
+# Detects SSH connection 
+when = 'test -n "$SSH_CLIENT" || test -n "$SSH_TTY" || test -n "$SSH_CONNECTION"'
+command = "echo ssh" # ssh_symbol [cite: 2]
+style = "bg:green fg:black" # ssh_bubble_color & ssh_symbol_color 
+format = "[](fg:green)[$output]($style)[](fg:green) "
+
+[lua]
+symbol = ' '
+
+[rust]
+symbol = '󱘗 '
+
+[cmd_duration]
+min_time = 0

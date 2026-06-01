@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+FILE=/tmp/screenshot-last.png
+grim -o "$(hyprctl monitors -j | python3 -c "import sys,json; ms=json.load(sys.stdin); print(next(m['name'] for m in ms if m['focused']))")" "$FILE" || exit 1
+wl-copy -t image/png < "$FILE"
+notify-send -a "screenshot" "Screenshot" "Copied to clipboard. Click to edit."
