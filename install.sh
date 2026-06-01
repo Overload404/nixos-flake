@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # NixOS Installer — overrig (RX 9060 XT)
 # Single-script installer for NixOS from the live ISO.
-# Clones the Overload404/nix-migration flake and performs a full install.
+# Clones the Overload404/nixos-flake flake and performs a full install.
 #
 # Usage:
-#   curl -sL https://raw.githubusercontent.com/Overload404/nix-migration/master/install.sh | bash
+#   curl -sL https://raw.githubusercontent.com/Overload404/nixos-flake/master/install.sh | bash
 #   bash install.sh
 #   bash install.sh --skip-partition   # if /mnt is already partitioned and mounted
 
@@ -233,8 +233,8 @@ if [[ -d /mnt/etc/nixos ]]; then
     rm -rf /mnt/etc/nixos
 fi
 
-info "Cloning Overload404/nix-migration..."
-nix-shell -p git --run "git clone https://github.com/Overload404/nix-migration.git /mnt/etc/nixos" \
+info "Cloning Overload404/nixos-flake..."
+nix-shell -p git --run "git clone https://github.com/Overload404/nixos-flake.git /mnt/etc/nixos" \
     || die "Failed to clone the configuration repository.\n  Check your internet connection and that the repo is public."
 
 ok
@@ -308,7 +308,7 @@ echo -e "${GREEN}${BOLD}╚═════════════════�
 echo ""
 echo -e "  ${BOLD}Host${NC}:         overrig"
 echo -e "  ${BOLD}User${NC}:         overload"
-echo -e "  ${BOLD}Config${NC}:       /etc/nixos (from Overload404/nix-migration)"
+echo -e "  ${BOLD}Config${NC}:       /etc/nixos (from Overload404/nixos-flake)"
 echo ""
 
 echo -ne "${BOLD}Reboot now? [y/N] ${NC}"
@@ -329,7 +329,7 @@ case "$REBOOT" in
         echo "password you just set. Your configuration lives at /etc/nixos."
         echo ""
         echo "To rebuild after changes:"
-        echo "  $ cd ~/repos/nix-migration   # or wherever you keep the repo"
+        echo "  $ cd ~/repos/nixos-flake   # or wherever you keep the repo"
         echo "  $ sudo nixos-rebuild switch --flake .#overrig"
         ;;
 esac

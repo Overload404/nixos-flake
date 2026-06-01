@@ -9,7 +9,7 @@ Step-by-step guide for installing NixOS from a live USB/CD using this flake conf
 One command — downloads and runs the automated installer from the live CD:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/Overload404/nix-migration/master/install.sh | sudo bash
+curl -sL https://raw.githubusercontent.com/Overload404/nixos-flake/master/install.sh | sudo bash
 ```
 
 The script handles everything: disk selection, partitioning, formatting, cloning the repo, generating hardware config, building, and setting passwords. You'll only need to:
@@ -23,7 +23,7 @@ The script handles everything: disk selection, partitioning, formatting, cloning
 If you've already partitioned and mounted to `/mnt`:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/Overload404/nix-migration/master/install.sh | sudo bash -s -- --skip-partition
+curl -sL https://raw.githubusercontent.com/Overload404/nixos-flake/master/install.sh | sudo bash -s -- --skip-partition
 ```
 
 > **Prefer to review first?** Download the script with `curl -LO <url>` and inspect it before running.
@@ -36,7 +36,7 @@ curl -sL https://raw.githubusercontent.com/Overload404/nix-migration/master/inst
 
 - **NixOS live ISO** booted (nixos-unstable recommended for RX 9060 XT support)
 - **Internet connection** (Wi-Fi or Ethernet)
-- This repo pushed to GitHub at `github:Overload404/nix-migration`
+- This repo pushed to GitHub at `github:Overload404/nixos-flake`
 - Your actual disk device name (examples here use `/dev/nvme0n1` — **replace with yours**)
 
 ---
@@ -127,7 +127,7 @@ mount /dev/nvme0n1p1 /mnt/boot
 nix-shell -p git
 
 # Clone from GitHub
-git clone https://github.com/Overload404/nix-migration.git /mnt/etc/nixos
+git clone https://github.com/Overload404/nixos-flake.git /mnt/etc/nixos
 
 # Generate hardware config (puts hardware-configuration.nix in /mnt/etc/nixos/)
 nixos-generate-config --root /mnt
@@ -216,7 +216,7 @@ You don't need to keep your config in `/etc/nixos` — point `nixos-rebuild` at 
 
 ```bash
 # Work from your clone (not /etc/nixos)
-cd ~/repos/nix-migration
+cd ~/repos/nixos-flake
 ```
 
 ### Update all packages
@@ -238,7 +238,7 @@ nix flake lock --update-input home-manager # Just home-manager
 
 ### Edit your config
 
-1. Edit files in `~/repos/nix-migration/` (add packages to `modules/packages.nix`, tweak `home.nix`, etc.)
+1. Edit files in `~/repos/nixos-flake/` (add packages to `modules/packages.nix`, tweak `home.nix`, etc.)
 2. Rebuild: `sudo nixos-rebuild switch --flake .#overrig`
 3. Commit and push: `git add -A && git commit -m "what changed" && git push`
 
@@ -284,7 +284,7 @@ sudo nixos-rebuild dry-activate --flake .#overrig
 ### Full update cycle (do this weekly)
 
 ```bash
-cd ~/repos/nix-migration
+cd ~/repos/nixos-flake
 git pull                    # If you use multiple machines
 nix flake update            # Pull latest package versions
 sudo nixos-rebuild switch --flake .#overrig   # Apply
