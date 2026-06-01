@@ -16,7 +16,7 @@
       mesa.drivers
       libva
       libva-utils
-      vaapiVdpau
+      libva-vdpau-driver
     ];
 
     # 32-bit packages for Steam and legacy games
