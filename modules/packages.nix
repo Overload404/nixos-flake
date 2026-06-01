@@ -136,7 +136,7 @@
     gnome-calculator
     libnotify
     wl-screenrec       # Wayland screen recorder
-    qt6ct              # Qt6 theme/platform config (fish sets QT_QPA_PLATFORMTHEME=qt6ct)
+    qt6Packages.qt6ct              # Qt6 theme/platform config (fish sets QT_QPA_PLATFORMTHEME=qt6ct)
     libsForQt5.qt5ct   # Qt5 theme/platform config
 
     # -----------------------------------------------------------------------
