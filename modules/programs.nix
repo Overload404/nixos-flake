@@ -41,6 +41,16 @@
   programs.tmux.enable = true;
 
   # ---------------------------------------------------------------------------
+  # Hyprland: register as desktop session for display managers
+  # ---------------------------------------------------------------------------
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+  };
+
+  # Note: xdg-desktop-portal-hyprland is configured below in xdg.portal
+
+  # ---------------------------------------------------------------------------
   # XDG Desktop Portal: screen sharing, file picker, etc.
   # ---------------------------------------------------------------------------
   xdg.portal = {

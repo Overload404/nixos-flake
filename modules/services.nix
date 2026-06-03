@@ -39,8 +39,10 @@
     };
   };
 
-  # Default session: Hyprland via UWSM (recommended for modern Hyprland)
-  services.displayManager.defaultSession = "hyprland-uwsm";
+  services.displayManager.defaultSession = "hyprland";
+
+  # UWSM: Universal Wayland Session Manager (better systemd integration)
+  programs.uwsm.enable = true;
 
   # ---------------------------------------------------------------------------
   # Network: NetworkManager
