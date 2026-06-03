@@ -391,11 +391,31 @@ echo -e "${GREEN}${BOLD}║       NixOS installation complete!            ║${N
 echo -e "${GREEN}${BOLD}║                                              ║${NC}"
 echo -e "${GREEN}${BOLD}╚══════════════════════════════════════════════╝${NC}"
 echo ""
-echo -e "  ${BOLD}Host${NC}:         overrig"
-echo -e "  ${BOLD}User${NC}:         overload"
-echo -e "  ${BOLD}Config${NC}:       /etc/nixos (from Overload404/nixos-flake)"
 echo ""
 
+# ── Post-install instructions ───────────
+header "Next Steps (after reboot)"
+
+echo ""
+echo "1. Log in as 'overload' with the password you just set"
+echo ""
+echo "2. Clone the config to your home directory (needed for home-manager):"
+echo ""
+echo "     git clone https://github.com/Overload404/nixos-flake.git ~/repos/nixos-flake"
+echo ""
+echo "3. Activate your dotfiles:"
+echo ""
+echo "     cd ~/repos/nixos-flake"
+echo "     home-manager switch --flake .#overload"
+echo ""
+echo "4. For daily updates:"
+echo ""
+echo "     cd ~/repos/nixos-flake"
+echo "     ./rebuild.sh"
+echo ""
+echo "- ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─"
+
+echo ""
 echo -ne "${BOLD}Reboot now? [y/N] ${NC}"
 read -r REBOOT < /dev/tty
 case "$REBOOT" in
@@ -407,14 +427,6 @@ case "$REBOOT" in
         ;;
     *)
         echo ""
-        echo "To reboot manually:"
-        echo "  $ reboot"
-        echo ""
-        echo "When the system comes up, log in as 'overload' with the"
-        echo "password you just set. Your configuration lives at /etc/nixos."
-        echo ""
-        echo "To rebuild after changes:"
-        echo "  $ cd ~/repos/nixos-flake   # or wherever you keep the repo"
-        echo "  $ sudo nixos-rebuild switch --flake .#overrig"
+        echo "To reboot: $ reboot"
         ;;
 esac

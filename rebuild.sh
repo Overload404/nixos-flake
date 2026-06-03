@@ -48,17 +48,22 @@ case "$CMD" in
     sudo nixos-rebuild switch --impure --flake .#overrig
     ok
 
-    # 4. garbage collect system
+    # 4. home-manager switch
+    header "Activating dotfiles..."
+    home-manager switch --flake .#overload 2>/dev/null || warn "home-manager not available — run 'nix profile install nixpkgs#home-manager'"
+    ok
+
+    # 5. garbage collect system
     header "Cleaning up old generations..."
     sudo nix-collect-garbage --delete-older-than 14d
     home-manager expire-generations -14d
     ok
 
-    # 5. disk usage
+    # 6. disk usage
     header "Disk usage"
     nix store info
 
-    # 6. push prompt
+    # 7. push prompt
     echo
     read -r -p "Push changes to git? [y/N]: " REPLY
     if [[ "$REPLY" =~ ^[Yy]$ ]]; then
