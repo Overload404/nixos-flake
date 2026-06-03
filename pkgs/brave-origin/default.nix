@@ -105,7 +105,7 @@ let
   allArchives = {
     x86_64-linux = {
       url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-origin-beta_${version}_amd64.deb";
-      hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+      hash = "sha256-iU0EIO1vMEowTIdVJswY4kXcuNw4EVWnGQIuIyp3H7k=";
     };
   };
 
