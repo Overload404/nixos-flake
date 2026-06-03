@@ -13,24 +13,30 @@
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  let
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+  in
   {
+    # Full NixOS system configuration (includes home-manager as a module)
     nixosConfigurations.overrig = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+      inherit system;
       specialArgs = { inherit inputs; };
       modules = [
         ./configuration.nix
         home-manager.nixosModules.home-manager
         {
-          # Use global nixpkgs for Home Manager
           home-manager.useGlobalPkgs = true;
-
-          # Allow Home Manager to install user packages
           home-manager.useUserPackages = true;
-
-          # Import the user's home configuration
           home-manager.users.overload = import ./home.nix;
         }
       ];
+    };
+
+    # Standalone Home Manager configuration (for home-manager switch --flake .#overload)
+    homeConfigurations."overload" = home-manager.lib.homeManagerConfiguration {
+      inherit pkgs;
+      modules = [ ./home.nix ];
     };
   };
 }
