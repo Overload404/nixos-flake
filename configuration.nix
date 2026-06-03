@@ -18,5 +18,6 @@
 
   nixpkgs.config.allowUnfree = true;
   # Custom package overlays
-  nixpkgs.overlays = [ (import ./overlay.nix) ];
+  # Brave-Origin overlay disabled (build issues)
+  # nixpkgs.overlays = [ (import ./overlay.nix) ];
 }
