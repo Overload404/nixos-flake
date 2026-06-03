@@ -344,18 +344,40 @@ ok
 # ──────────────────────────────────────────────
 header "User Setup"
 
+# Helper: prompt for a password with confirmation
+set_password() {
+    local USER="$1"
+    local PASS1 PASS2
+
+    while true; do
+        echo ""
+        read -r -s -p "  Password for $USER: " PASS1 < /dev/tty || true
+        echo ""
+        read -r -s -p "  Retype password: " PASS2 < /dev/tty || true
+        echo ""
+
+        if [[ "$PASS1" != "$PASS2" ]]; then
+            warn "Passwords do not match — try again"
+        elif [[ -z "$PASS1" ]]; then
+            warn "Password cannot be empty"
+        else
+            break
+        fi
+    done
+
+    echo "$USER:$PASS1" | nixos-enter --root /mnt -- chpasswd 2>/dev/null
+    if [[ $? -ne 0 ]]; then
+        warn "Could not set password for $USER. You can set it manually after reboot with 'passwd $USER'."
+    fi
+}
+
 echo ""
 echo -e "${BOLD}Set the password for the 'overload' user.${NC}"
+set_password overload
 
-# Set user password interactively via nixos-enter
-nixos-enter --root /mnt -c "passwd overload" \
-    || die "Failed to set password for user 'overload'."
-
-# Set root password
 echo ""
 echo -e "${BOLD}Set the root password.${NC}"
-nixos-enter --root /mnt -c "passwd root" \
-    || die "Failed to set root password."
+set_password root
 
 ok
 
